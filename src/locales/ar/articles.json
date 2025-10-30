@@ -1,0 +1,13 @@
+{
+  "published": "منشور: ",
+  "publish_date": "تاريخ النشر: ",
+  "create_article": "انشاء مقالة",
+
+  "TITLE": "العنوان",
+  "CATEGORY": "المجموعة",
+  "IS_PUBLISHED": "تم النشر",
+  "SCHEDULE_PUBLISH_AT": "جدولة النشر حتى",
+  "TAGS": "تاغات",
+  "CONTENT": "المحتوى",
+  "SUBMIT": "تأكيد"
+}

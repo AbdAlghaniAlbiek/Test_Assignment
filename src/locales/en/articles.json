@@ -1,0 +1,13 @@
+{
+  "published": "Published: ",
+  "publish_date": "Publish Date: ",
+  "create_article": "Create Article",
+
+  "TITLE": "Title",
+  "CATEGORY": "Category",
+  "IS_PUBLISHED": "Is Published",
+  "SCHEDULE_PUBLISH_AT": "Schedule Publish At",
+  "TAGS": "Tags",
+  "CONTENT": "Content",
+  "SUBMIT": "Submit"
+}

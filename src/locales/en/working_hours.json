@@ -1,0 +1,16 @@
+{
+  "CERATE_TIME_RANGE": "Create Time Range",
+  "UNSAVED_CHANGES": "Unsaved Changes",
+  "SAVE": "SAVE",
+  "DISCARD": "DISCARD",
+  "TIME_RANGE": "Time Range",
+  "DIALOG_DESC": "Specify From/To Working day information",
+  "DAY": "day",
+
+  "FROM": "From (in hours)",
+  "TO": "To (in hours)",
+  "FROM_IN_MINUTES": "From (in minutes)",
+  "TO_IN_MINUTES": "To (in minutes)",
+  "SUBMIT": "Submit",
+  "CANCEL": "Cancel"
+}
