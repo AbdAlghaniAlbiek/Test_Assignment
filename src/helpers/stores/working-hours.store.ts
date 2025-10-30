@@ -36,6 +36,7 @@ interface IWorkingHoursStore {
   deleteDateRange: (id: number, rangeId: number) => void;
   discardChanges: () => void;
   clearUpdateRange: () => void;
+  copyRange: (range: Range) => void;
 }
 
 function addRange(
@@ -155,4 +156,5 @@ export const useWorkingHoursStore = create<IWorkingHoursStore>((set) => ({
     })),
   discardChanges: () => set((state) => ({ ...state, updatedRanges: [] })),
   clearUpdateRange: () => set((state) => ({ ...state, updatedRanges: [] })),
+  copyRange: (range) => set((state) => ({ ...state, copiedDateRang: range })),
 }));

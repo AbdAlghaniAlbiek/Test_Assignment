@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useWorkingHoursStore } from "@/helpers/stores/working-hours.store";
 import { cn } from "@/lib/utils";
 import UpdateDayRange from "../dialogs/update-day-range";
+import { toast } from "sonner";
 
 // interface IDayRange {
 //   time: string;
@@ -47,7 +48,7 @@ function DayRange({
   toMinutes,
 }: //   setDialogContent,
 IDayRange) {
-  const { deleteDateRange } = useWorkingHoursStore();
+  const { deleteDateRange, copyRange } = useWorkingHoursStore();
 
   return (
     <div
@@ -66,6 +67,17 @@ IDayRange) {
           }}
         >
           Del
+        </Button>
+        <Button
+          className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded-md"
+          onClick={(e) => {
+            e.stopPropagation();
+
+            copyRange({ from, to, fromMinutes, id, toMinutes });
+            toast.success("Copied Time Range");
+          }}
+        >
+          Copy
         </Button>
         {/* <Button
           className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded-md"

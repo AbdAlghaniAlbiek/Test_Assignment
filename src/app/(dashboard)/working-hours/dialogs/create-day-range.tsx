@@ -82,14 +82,20 @@ import { toast, Toaster } from "sonner";
 // }
 
 function CreateDayRangeDialog() {
-  const [from, setFrom] = useState(0);
-  const [fromMinutes, setFromMinutes] = useState(0);
-  const [to, setTo] = useState(0);
-  const [toMinutes, setToMinutes] = useState(0);
+  const {
+    dateRanges,
+    addRange: addDateRange,
+    copiedDateRang,
+  } = useWorkingHoursStore();
+
+  const [from, setFrom] = useState(copiedDateRang.from ?? 0);
+  const [fromMinutes, setFromMinutes] = useState(
+    copiedDateRang.fromMinutes ?? 0
+  );
+  const [to, setTo] = useState(copiedDateRang.to ?? 0);
+  const [toMinutes, setToMinutes] = useState(copiedDateRang.toMinutes ?? 0);
   const [selectedDay, setSelectedDay] = useState("");
   const [disabledButton, setDisabledButton] = useState(false);
-
-  const { dateRanges, addRange: addDateRange } = useWorkingHoursStore();
 
   useEffect(() => {
     dateRanges.forEach((dateRange) => {
