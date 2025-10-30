@@ -45,7 +45,7 @@ export function SchedulePublishAt({ date, setDate }: ISchedulePublishAt) {
             selected={date}
             captionLayout="dropdown"
             onSelect={(date) => {
-              setDate(date);
+              setDate(new Date(date));
               setOpen(false);
             }}
           />

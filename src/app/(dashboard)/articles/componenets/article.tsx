@@ -32,7 +32,11 @@ function ArticleComponent({ article }: IArticle) {
       </p>
       <p className="text-sm">
         <span>{t("publish_date")}</span>{" "}
-        {dayjs(article?.publishedAt).format("YYYY-MM-DD") ?? <b>-</b>}
+        {article?.publishedAt ? (
+          dayjs(article?.publishedAt).format("YYYY-MM-DD")
+        ) : (
+          <b>-</b>
+        )}
       </p>
       <Download
         width={20}

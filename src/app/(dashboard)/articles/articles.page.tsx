@@ -23,6 +23,8 @@ function ArticlesPage() {
 
   const { t } = useTranslation("article");
 
+  console.log(articles);
+
   return (
     <PageContent>
       <Button

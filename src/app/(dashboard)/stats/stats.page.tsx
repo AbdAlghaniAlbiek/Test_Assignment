@@ -9,6 +9,8 @@ import {
 import React, { useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { useTranslation } from "react-i18next";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function StatsPage() {
   const articlesPerCategory = {};
@@ -206,6 +208,8 @@ function StatsPage() {
     },
   });
 
+  const [startDate, setStartDate] = useState(new Date());
+
   return (
     <PageContent>
       <Tabs defaultValue="tab-1">
@@ -221,7 +225,7 @@ function StatsPage() {
             height={350}
           />
         </TabsContent>
-        <TabsContent value="tab-2">
+        <TabsContent value="tab-2" className="flex flex-col">
           <ReactApexChart
             options={viewsPerDayState.options}
             series={viewsPerDayState.series}
@@ -229,6 +233,12 @@ function StatsPage() {
             height={350}
           />
         </TabsContent>
+
+        {/* <DatePicker
+          className="absolute border bottom-0 left-[50%] translate-x-[-50%]"
+          selected={startDate}
+          onChange={(date) => setStartDate(date)}
+        /> */}
       </Tabs>
     </PageContent>
   );

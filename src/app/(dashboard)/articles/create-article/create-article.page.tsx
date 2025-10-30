@@ -127,7 +127,9 @@ function CreateArticlePage() {
         name: JSON.parse(category).name,
       },
       publishStatus: isPublished,
-      tags: tags.map((tag) => ({ id: tag.id, label: tag.label })),
+      tags: tags.filter((tag) => {
+        if (tag.isSelected) return { id: tag.id, label: tag.label };
+      }),
       schedulePublishDate,
       publishedAt: schedulePublishDate ? null : new Date(),
       id: articles[articles?.length - 1]?.id
@@ -187,7 +189,10 @@ function CreateArticlePage() {
               </Label>
             </div>
 
-            <SchedulePublishAt date={date} setDate={setDate} />
+            <SchedulePublishAt
+              date={schedulePublishDate}
+              setDate={setSchedulePublishDate}
+            />
 
             <div>
               <Label htmlFor="tags">{t("TAGS")}</Label>
