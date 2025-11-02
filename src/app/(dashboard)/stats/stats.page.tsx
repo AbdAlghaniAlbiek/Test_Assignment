@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   articlesItems,
   categoriesItems,
+  useArticlesStore,
 } from "@/helpers/stores/articles.store";
 import React, { useState } from "react";
 import ReactApexChart from "react-apexcharts";
@@ -14,7 +15,10 @@ import "react-datepicker/dist/react-datepicker.css";
 
 function StatsPage() {
   const articlesPerCategory = {};
-  articlesItems.forEach((art) => {
+
+  const { articles } = useArticlesStore();
+
+  articles.forEach((art) => {
     if (!articlesPerCategory[art.category.name]) {
       articlesPerCategory[art.category.name] = 1;
     } else {
@@ -23,8 +27,8 @@ function StatsPage() {
   });
 
   const viewsPerDay = {};
-  articlesItems.forEach((art) => {
-    art.viewedAt.forEach((artV) => {
+  articles.forEach((art) => {
+    art?.viewedAt?.forEach((artV) => {
       const date = artV.split("T");
       const month = date[0].split("-")[1];
       const day = date[0].split("-")[2];
@@ -234,11 +238,11 @@ function StatsPage() {
           />
         </TabsContent>
 
-        {/* <DatePicker
+        <DatePicker
           className="absolute border bottom-0 left-[50%] translate-x-[-50%]"
           selected={startDate}
           onChange={(date) => setStartDate(date)}
-        /> */}
+        />
       </Tabs>
     </PageContent>
   );

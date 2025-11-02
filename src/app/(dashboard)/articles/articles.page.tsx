@@ -2,7 +2,7 @@
 
 import PageContent from "@/components/content/content";
 import { useArticlesStore } from "@/helpers/stores/articles.store";
-import React, { useState, useTransition } from "react";
+import React, { useEffect, useReducer, useState, useTransition } from "react";
 import ArticleComponent from "./componenets/article";
 import { arrayMoveImmutable } from "array-move";
 import SortableList, { SortableItem, SortableKnob } from "react-easy-sort";
@@ -13,15 +13,18 @@ import { useTranslation } from "react-i18next";
 
 function ArticlesPage() {
   const { articles } = useArticlesStore();
-
   const [art, setArt] = useState(articles!);
 
   const onSortEnd = (oldIndex: number, newIndex: number) => {
     setArt((array) => arrayMoveImmutable(array!, oldIndex, newIndex));
   };
-  const router = useRouter();
 
   const { t } = useTranslation("article");
+  const router = useRouter();
+
+  useEffect(() => {
+    setArt(articles!);
+  }, [articles]);
 
   console.log(articles);
 
@@ -40,8 +43,8 @@ function ArticlesPage() {
         draggedItemClassName="dragged"
       >
         <div className="grid grid-cols-5 gap-2">
-          {art.map((item) => (
-            <SortableItem key={item.id}>
+          {art.map((item, i) => (
+            <SortableItem key={i}>
               <div className="item">
                 <SortableKnob>
                   <ArticleComponent article={item} key={item.id} />

@@ -14,20 +14,25 @@ import {
 import { useTranslation } from "react-i18next";
 
 interface ISchedulePublishAt {
-  date: Date | undefined;
-  setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  // date: Date | undefined;
+  // setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  // field: any;
+  onSelectChange: (date) => void;
+  defaultValue: any;
 }
 
-export function SchedulePublishAt({ date, setDate }: ISchedulePublishAt) {
+export function SchedulePublishAt({
+  // date,
+  // setDate,
+  // field,
+  onSelectChange,
+  defaultValue,
+}: ISchedulePublishAt) {
   const [open, setOpen] = React.useState(false);
-
-  const { t } = useTranslation("article");
+  const [date, setDate] = React.useState<Date>(defaultValue);
 
   return (
     <div className="flex flex-col gap-3">
-      <Label htmlFor="date" className="px-1">
-        {t("SCHEDULE_PUBLISH_AT")}
-      </Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -45,6 +50,7 @@ export function SchedulePublishAt({ date, setDate }: ISchedulePublishAt) {
             selected={date}
             captionLayout="dropdown"
             onSelect={(date) => {
+              onSelectChange(new Date(date));
               setDate(new Date(date));
               setOpen(false);
             }}

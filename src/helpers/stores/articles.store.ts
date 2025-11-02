@@ -17,25 +17,28 @@ export interface Article {
   category: { id: number; name: string };
   tags: { id: number; label: string }[];
   content: string;
-  coverImage: string;
+  coverImage?: string;
   publishStatus: boolean;
-  schedulePublishDate?: Date;
+  schedulePublishDate?: Date | null;
   publishedAt?: Date | null;
   viewedAt?: string[];
 }
 
 interface IArticleStore {
   articles?: Article[];
+  article: Article;
   addArticle: (article: Article) => void;
   removeArticle: (id: number) => void;
-  updateArticleArticle: (id: number, article: Article) => void;
+  updateArticle: (id: number, article: Article) => void;
+  findArticle: (id: number) => void;
+  forceRender: () => void;
 }
 
 export const articlesItems = [
   {
     id: 1,
     title: "Title1",
-    content: "lorem ipsum lorem ipsum lorem ipsum",
+    content: "<p>lorem ipsum lorem ipsum lorem ipsum</p>",
     coverImage: "/cover-image",
     category: { id: 1, name: "News" },
     publishedAt: new Date(),
@@ -55,7 +58,7 @@ export const articlesItems = [
   {
     id: 2,
     title: "Title2",
-    content: "lorem ipsum lorem ipsum lorem ipsum",
+    content: "<p>lorem ipsum lorem ipsum lorem ipsum</p>",
     coverImage: "/cover-image",
     category: { id: 1, name: "News" },
     publishedAt: new Date(),
@@ -75,7 +78,7 @@ export const articlesItems = [
   {
     id: 3,
     title: "Title3",
-    content: "lorem ipsum lorem ipsum lorem ipsum",
+    content: "<p>lorem ipsum lorem ipsum lorem ipsum</p>",
     coverImage: "/cover-image",
     category: { id: 2, name: "National Geographic" },
     publishedAt: new Date(),
@@ -95,7 +98,7 @@ export const articlesItems = [
   {
     id: 4,
     title: "Title4",
-    content: "lorem ipsum lorem ipsum lorem ipsum",
+    content: "<p>lorem ipsum lorem ipsum lorem ipsum</p>",
     coverImage: "/cover-image",
     category: { id: 2, name: "National Geographic" },
     schedulePublishDate: new Date("2025-11-30T06:28:05.241Z"),
@@ -116,6 +119,12 @@ export const articlesItems = [
 
 export const useArticlesStore = create<IArticleStore>((set) => ({
   articles: articlesItems,
+  article: {},
+  findArticle: (id: number) =>
+    set((state) => ({
+      ...state,
+      article: state.articles?.find((art) => art.id === id),
+    })),
   addArticle: (article: Article) =>
     set((state: any) => ({
       ...state,
@@ -124,11 +133,14 @@ export const useArticlesStore = create<IArticleStore>((set) => ({
   removeArticle: (id: number) =>
     set((state: any) => ({
       ...state,
-      articles: state.article.filter((article) => article.id !== id),
+      articles: [...state.articles.filter((article) => article.id !== id)],
     })),
-  updateArticleArticle: (id: number, article: Article) =>
+  updateArticle: (id: number, article: Partial<Article>) =>
     set((state: any) => ({
       ...state,
-      articles: state.article.map((art) => (art.id === id ? article : art)),
+      articles: [
+        ...state.articles.map((art) => (art.id === id ? article : art)),
+      ],
     })),
+  forceRender: () => set((state) => ({ ...state })),
 }));

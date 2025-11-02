@@ -48,7 +48,13 @@ function DayRange({
   toMinutes,
 }: //   setDialogContent,
 IDayRange) {
-  const { deleteDateRange, copyRange } = useWorkingHoursStore();
+  const {
+    deleteDateRange,
+    copyRange,
+    rangeIds,
+    addRangeIds,
+    copyRangeToDateRanges,
+  } = useWorkingHoursStore();
 
   return (
     <div
@@ -73,7 +79,11 @@ IDayRange) {
           onClick={(e) => {
             e.stopPropagation();
 
-            copyRange({ from, to, fromMinutes, id, toMinutes });
+            // copyRange({ from, to, fromMinutes, id, toMinutes });
+
+            copyRangeToDateRanges(id, { from, to, fromMinutes, toMinutes });
+            addRangeIds(rangeId);
+
             toast.success("Copied Time Range");
           }}
         >

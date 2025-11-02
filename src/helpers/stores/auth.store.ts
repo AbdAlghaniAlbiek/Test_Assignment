@@ -12,7 +12,7 @@ interface IUserAuth {
 }
 
 export const useAuthStore = create<IUserAuth>((set) => ({
-  auth: { email: "ahmad@gmail.com", password: "1234", name: "Ahmad Madani" },
+  auth: { email: "ahmad@gmail.com", password: "123456", name: "Ahmad Madani" },
   setUserAuth: () =>
     set((state: unknown) => ({
       auth: {

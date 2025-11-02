@@ -37,6 +37,8 @@ function WorkingHoursPage() {
 
   const { t } = useTranslation("working_hours");
 
+  console.log("test working hours", dateRanges);
+
   return (
     <PageContent>
       {updatedRanges?.length > 0 && (
@@ -61,7 +63,7 @@ function WorkingHoursPage() {
       )}
 
       {dateRanges.map((day, i) => (
-        <div key={i} className="flex flex-row">
+        <div key={i} className="grid grid-flow-col justify-start gap-1">
           <p className="mr-4 h-[80px]">{day.day}</p>
 
           {day.ranges?.map((time, j) => (

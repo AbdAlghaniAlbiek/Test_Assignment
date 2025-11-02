@@ -86,6 +86,8 @@ function CreateDayRangeDialog() {
     dateRanges,
     addRange: addDateRange,
     copiedDateRang,
+    addRangeIds,
+    rangeIds,
   } = useWorkingHoursStore();
 
   const [from, setFrom] = useState(copiedDateRang.from ?? 0);
@@ -142,6 +144,7 @@ function CreateDayRangeDialog() {
     dateRanges.forEach((dateRang) => {
       if (dateRang.day === selectedDay) {
         addDateRange(dateRang.id!, { from, to, fromMinutes, toMinutes });
+        addRangeIds(rangeIds);
       }
     });
   };

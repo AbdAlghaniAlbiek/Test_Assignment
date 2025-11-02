@@ -37,15 +37,29 @@ interface IWorkingHoursStore {
   discardChanges: () => void;
   clearUpdateRange: () => void;
   copyRange: (range: Range) => void;
+  rangeIds: number;
+  addRangeIds: (latestRange: number) => void;
+  copyRangeToDateRanges: (
+    idDateRange: number,
+    range: {
+      from: number;
+      to: number;
+      fromMinutes: number;
+      toMinutes: number;
+    }
+  ) => void;
 }
 
 function addRange(
   dateRange: DateRang,
-  range: { from: number; to: number; fromMinutes: number; toMinutes: number }
+  range: { from: number; to: number; fromMinutes: number; toMinutes: number },
+  rangeIds: number
 ) {
-  const id = dateRange.ranges[dateRange?.ranges?.length - 1]?.id
-    ? dateRange.ranges[dateRange?.ranges?.length - 1]?.id + 1
-    : 1;
+  // const id = dateRange.ranges[dateRange?.ranges?.length - 1]?.id
+  //   ? dateRange.ranges[dateRange?.ranges?.length - 1]?.id + 1
+  //   : 1;
+
+  const id = rangeIds;
 
   dateRange.ranges?.push({
     from: range.from,
@@ -80,6 +94,39 @@ function saveUpdateRangesOperation(
     });
   });
   updatedRanges = [];
+
+  return dateRanges;
+}
+
+function copRangeToDateRangesOperation(
+  idDateRange,
+  dateRanges: DateRang[],
+  range: {
+    from: number;
+    to: number;
+    fromInMinutes: number;
+    toInMinutes: number;
+  },
+  lastRangeId
+) {
+  console.log("range", range);
+
+  dateRanges = dateRanges.map((dateRange) => {
+    if (dateRange.id !== idDateRange) {
+      dateRange.ranges.push({
+        id: lastRangeId,
+        from: range.from,
+        to: range.to,
+        fromMinutes: range.fromInMinutes,
+        toMinutes: range.toInMinutes,
+      });
+      lastRangeId++;
+    }
+
+    console.log("dateranges", dateRanges);
+
+    return dateRange;
+  });
 
   return dateRanges;
 }
@@ -124,12 +171,17 @@ export const useWorkingHoursStore = create<IWorkingHoursStore>((set) => ({
   ],
   copiedDateRang: {},
   updatedRanges: [],
+  rangeIds: 1,
+  addRangeIds: (latestRangeId) =>
+    set((state) => ({ ...state, rangeIds: latestRangeId + 1 })),
   addRange: (id, range) =>
     set((state) => ({
       ...state,
       dateRanges: [
         ...state.dateRanges.map((dateRange) =>
-          dateRange.id === id ? addRange(dateRange, range) : dateRange
+          dateRange.id === id
+            ? addRange(dateRange, range, state.rangeIds)
+            : dateRange
         ),
       ],
     })),
@@ -157,4 +209,16 @@ export const useWorkingHoursStore = create<IWorkingHoursStore>((set) => ({
   discardChanges: () => set((state) => ({ ...state, updatedRanges: [] })),
   clearUpdateRange: () => set((state) => ({ ...state, updatedRanges: [] })),
   copyRange: (range) => set((state) => ({ ...state, copiedDateRang: range })),
+  copyRangeToDateRanges: (idDateRange, range) =>
+    set((state) => ({
+      ...state,
+      dateRanges: [
+        ...copRangeToDateRangesOperation(
+          idDateRange,
+          state.dateRanges,
+          range,
+          state.rangeIds
+        ),
+      ],
+    })),
 }));

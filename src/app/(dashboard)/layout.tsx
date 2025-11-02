@@ -25,12 +25,10 @@ function layout({ children }: { children: React.ReactNode }) {
     setHideAppName(!hideAppName);
   };
 
-  //   const { auth } = useAuthStore();
-  //   if (!auth) {
-  //     redirect(AppRoutes.Auth);
-  //   }
-
-  //   console.log(auth);
+  const { auth } = useAuthStore();
+  if (!auth) {
+    redirect(AppRoutes.Auth);
+  }
 
   const { t } = useTranslation("sidebar");
 

@@ -20,28 +20,35 @@ import { useAuthStore } from "@/helpers/stores/auth.store";
 import { redirect, useRouter } from "next/navigation";
 import { AppRoutes } from "@/helpers/routes/routes";
 import { toast } from "sonner";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { TAuthSchema, useAuthForm } from "./auth.schema";
+import { Spinner } from "@/components/ui/spinner";
 
 function page() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const { setUserAuth, auth } = useAuthStore();
   const router = useRouter();
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
+  const form = useAuthForm();
 
+  const onSubmit = async (data: TAuthSchema) => {
     try {
       setButtonDisabled(true);
 
-      if (!email || !password) {
-        toast.error("You should fill both email and password fields");
-        return;
-      }
-
-      if (email !== auth?.email || password !== auth?.password) {
+      if (data.email !== auth?.email || data.password !== auth?.password) {
         toast.error("Email or password incorrect");
+        setButtonDisabled(false);
         return;
       }
 
@@ -49,8 +56,6 @@ function page() {
       toast.success("Ahmad you signed in successfully");
 
       router.push(AppRoutes.Articles);
-      // redirect(AppRoutes.Articles);
-      // window.history.replaceState(AppRoutes.Articles, "");
 
       setButtonDisabled(false);
     } catch (err) {
@@ -68,46 +73,57 @@ function page() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={onSubmit}>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="123456"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-            </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="m@example.com"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <Button
-              type="submit"
-              className="w-full mt-5"
-              disabled={buttonDisabled}
-            >
-              Login
-            </Button>
-          </form>
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="password"
+                        type="password"
+                        placeholder="123456"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type="submit"
+                className="w-full mt-5 flex flex-row gap-2"
+                disabled={buttonDisabled}
+              >
+                {form.formState.isLoading && <Spinner />}
+                Submit
+              </Button>
+            </form>
+          </Form>
         </CardContent>
-        {/* <CardFooter className="flex-col gap-2">
-          
-        </CardFooter> */}
       </Card>
     </div>
   );
