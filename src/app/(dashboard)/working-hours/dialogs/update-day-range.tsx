@@ -22,10 +22,10 @@ import {
 
 interface IUpdateDayRange {
   rangeId: number;
-  from: number;
-  fromMinutes: number;
-  to: number;
-  toMinutes: number;
+  from: string;
+  fromMinutes: string;
+  to: string;
+  toMinutes: string;
 }
 
 function UpdateDayRange({
@@ -35,14 +35,11 @@ function UpdateDayRange({
   toMinutes: defaultToMinutes,
   rangeId,
 }: IUpdateDayRange) {
-  // const [from, setFrom] = useState(defaultFrom);
-  // const [fromMinutes, setFromMinutes] = useState(defaultFromMinutes);
-  // const [to, setTo] = useState(defaultTo);
-  // const [toMinutes, setToMinutes] = useState(defaultToMinutes);
-
   const { addToUpdatedRanges } = useWorkingHoursStore();
 
   const form = useUpdateWorkingHourForm();
+
+  console.log(defaultFrom, defaultTo, defaultFromMinutes, defaultToMinutes);
 
   const onSubmit = (data: TUpdateWorkingHoursSchema) => {
     // if (from > to) {
@@ -54,20 +51,20 @@ function UpdateDayRange({
       id: rangeId,
       from: data?.from
         ? Number.parseInt(data?.from?.split(":")[0])
-        : defaultFrom,
-      to: data.to ? Number.parseInt(data.to.split(":")[0]) : defaultTo,
+        : Number.parseFloat(defaultFrom),
+      to: data.to
+        ? Number.parseInt(data.to.split(":")[0])
+        : Number.parseInt(defaultTo),
       fromMinutes: data.from
         ? Number.parseInt(data.from.split(":")[1])
-        : defaultFromMinutes,
+        : Number.parseInt(defaultFromMinutes),
       toMinutes: data.to
         ? Number.parseInt(data.to.split(":")[1])
-        : defaultToMinutes,
+        : Number.parseInt(defaultToMinutes),
     });
   };
 
   const { t } = useTranslation("working_hours");
-
-  console.log(defaultTo, defaultToMinutes);
 
   return (
     <div>
@@ -107,7 +104,7 @@ function UpdateDayRange({
                     id="to"
                     placeholder={t("TO")}
                     type="time"
-                    defaultValue={`${defaultTo}:${defaultToMinutes}`}
+                    defaultValue={`${defaultTo.toString()}:${defaultToMinutes.toString()}`}
                     {...field}
                   />
                 </FormControl>
@@ -115,49 +112,6 @@ function UpdateDayRange({
               </FormItem>
             )}
           />
-
-          <div className="flex flex-row gap-2">
-            {/* <div>
-              <Label htmlFor="from">{t("FROM")}</Label>
-              <Input
-                id="from"
-                placeholder={t("FROM")}
-                value={from}
-                onChange={(e) => setFrom(Number.parseInt(e.target.value))}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="from">{t("FROM_IN_MINUTES")}</Label>
-              <Input
-                id="from"
-                placeholder={t("FROM_IN_MINUTES")}
-                value={fromMinutes}
-                onChange={(e) => setFromMinutes(Number.parseInt(e.target.value))}
-              />
-            </div> */}
-          </div>
-
-          {/* <div className="flex flex-row gap-2">
-            <div>
-              <Label htmlFor="to">{t("TO")}</Label>
-              <Input
-                id="to"
-                placeholder={t("TO")}
-                value={to}
-                onChange={(e) => setTo(Number.parseInt(e.target.value))}
-              />
-            </div>
-            <div>
-              <Label htmlFor="to">{t("TO_IN_MINUTES")}</Label>
-              <Input
-                id="to"
-                placeholder={t("TO_IN_MINUTES")}
-                value={toMinutes}
-                onChange={(e) => setToMinutes(Number.parseInt(e.target.value))}
-              />
-            </div>
-          </div> */}
           <Button type="submit">{t("SUBMIT")}</Button>
         </form>
       </Form>

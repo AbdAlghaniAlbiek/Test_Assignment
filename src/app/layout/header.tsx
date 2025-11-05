@@ -26,6 +26,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import profileImage from "@/assets/profile-image.png";
 import { useTheme } from "next-themes";
 import i18n from "@/helpers/i18n/i18n";
+import { useTranslation } from "react-i18next";
 
 interface IHeader {
   routesToIgnore?: string[];
@@ -33,22 +34,6 @@ interface IHeader {
 }
 
 function Header({ routesToIgnore, toggleShowingAppName }: IHeader) {
-  // const userAuth = useAuthentication();
-  // const { settings, setSettings } = useAppSettings();
-  // const { setTheme: setNextTheme } = useTheme();
-
-  // const [lang, setLang] = useState<string>();
-  // const [theme, setTheme] = useState<string>();
-
-  // useEffect(() => {
-  //   if (lang || theme) {
-  //     setSettings({
-  //       ...(lang && { lang: lang as AppLang }),
-  //       ...(theme && { theme: theme as AppTheme }),
-  //     });
-  //   }
-  // }, [theme, lang]);
-
   const { toggleTheme, toggleLanguage, theme, language } =
     useAppSettingsStore();
 
@@ -86,6 +71,12 @@ function Header({ routesToIgnore, toggleShowingAppName }: IHeader) {
       pascalCasePaths.push(snakeToPascalCase(path))
   );
 
+  const lastPathLink = snakeToPascalCase(
+    separatedFullPath[separatedFullPath.length - 1]
+  );
+
+  const { t } = useTranslation("header");
+
   return (
     <header
       className={cn(
@@ -107,7 +98,8 @@ function Header({ routesToIgnore, toggleShowingAppName }: IHeader) {
                     <BreadcrumbItem>
                       <BreadcrumbLink asChild>
                         <Link href={`/${path.toLowerCase()}` as any}>
-                          {path}
+                          {t(`${path}`)}
+                          {/* {path} */}
                         </Link>
                       </BreadcrumbLink>
                     </BreadcrumbItem>
@@ -119,9 +111,10 @@ function Header({ routesToIgnore, toggleShowingAppName }: IHeader) {
             {separatedFullPath[separatedFullPath.length - 1] && (
               <BreadcrumbItem>
                 <BreadcrumbPage>
-                  {snakeToPascalCase(
+                  {t(`${lastPathLink}`)}
+                  {/* {snakeToPascalCase(
                     separatedFullPath[separatedFullPath.length - 1]
-                  )}
+                  )} */}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             )}

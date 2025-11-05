@@ -16,14 +16,14 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// const geistMono = Geist_Mono({
+//   variable: "--font-geist-mono",
+//   subsets: ["latin"],
+// });
 
 const cairoSans = Cairo({
-  variable: "--font-cairo-mono",
-  subsets: ["arabic"],
+  subsets: ["arabic", "latin"],
+  variable: "--font-cairo",
 });
 
 // export const metadata: Metadata = {
@@ -52,7 +52,9 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${cairoSans.variable}`}
+        className={`
+          ${cairoSans.variable}
+          ${geistSans.variable}`}
         lang={language === "English" ? "en" : "ar"}
         dir={language === "English" ? "ltr" : "rtl"}
       >

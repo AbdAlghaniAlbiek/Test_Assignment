@@ -62,7 +62,7 @@ function WorkingHoursPage() {
 
       {dateRanges.map((day, i) => (
         <div key={i} className="grid grid-flow-col justify-start gap-1">
-          <p className="mr-4 h-[80px]">{day.day}</p>
+          <p className="w-[80px] h-[80px]">{t(`${day.day}`)}</p>
 
           {day.ranges?.map((time, j) => (
             <DayRange
@@ -78,11 +78,21 @@ function WorkingHoursPage() {
                 setIsOpen(true);
                 setDialogContent(
                   <UpdateDayRange
-                    from={time.from}
-                    to={time.to}
+                    from={
+                      time.from < 10 ? `0${time.from}` : time.from.toString()
+                    }
+                    to={time.to < 10 ? `0${time.to}` : time.to.toString()}
                     rangeId={time.id}
-                    fromMinutes={time.fromMinutes}
-                    toMinutes={time.toMinutes}
+                    fromMinutes={
+                      time.fromMinutes < 10
+                        ? `0${time.fromMinutes}`
+                        : time.fromMinutes.toString()
+                    }
+                    toMinutes={
+                      time.toMinutes < 10
+                        ? `0${time.toMinutes}`
+                        : time.toMinutes.toString()
+                    }
                   />
                 );
               }}

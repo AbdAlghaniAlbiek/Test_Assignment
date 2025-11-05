@@ -5,6 +5,8 @@ import { useWorkingHoursStore } from "@/helpers/stores/working-hours.store";
 import { cn } from "@/lib/utils";
 import UpdateDayRange from "../dialogs/update-day-range";
 import { toast } from "sonner";
+import { useAppSettingsStore } from "@/helpers/stores/settings.store";
+import { useTranslation } from "react-i18next";
 
 // interface IDayRange {
 //   time: string;
@@ -56,6 +58,8 @@ IDayRange) {
     copyRangeToDateRanges,
   } = useWorkingHoursStore();
 
+  const { t } = useTranslation("working_hours");
+
   return (
     <div
       className={cn(
@@ -72,7 +76,7 @@ IDayRange) {
             deleteDateRange(id, rangeId);
           }}
         >
-          Del
+          {t("DEL")}
         </Button>
         <Button
           className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded-md"
@@ -87,11 +91,13 @@ IDayRange) {
             toast.success("Copied Time Range");
           }}
         >
-          Copy
+          {t("COPY")}
         </Button>
       </div>
-      <p>
-        {from}:{fromMinutes} - {to}:{toMinutes}
+      <p className="text-left">
+        {from < 10 ? `0${from}` : from}:{" "}
+        {fromMinutes < 10 ? `0${fromMinutes}` : fromMinutes} -{" "}
+        {to < 10 ? `0${to}` : to}:{toMinutes < 10 ? `0${toMinutes}` : toMinutes}
       </p>
     </div>
   );

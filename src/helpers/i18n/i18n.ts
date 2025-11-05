@@ -63,12 +63,14 @@ import settingsEn from "@/locales/en/settings.json";
 import statsEn from "@/locales/en/stats.json";
 import workingHoursEn from "@/locales/en/working_hours.json";
 import sidebarEn from "@/locales/en/sidebar.json";
+import headerEn from "@/locales/en/header.json";
 
 import articlesAr from "@/locales/ar/articles.json";
 import settingsAr from "@/locales/ar/settings.json";
 import statsAr from "@/locales/ar/stats.json";
 import workingHoursAr from "@/locales/ar/working_hours.json";
 import sidebarAr from "@/locales/ar/sidebar.json";
+import headerAr from "@/locales/ar/header.json";
 
 const resources = {
   en: {
@@ -77,6 +79,7 @@ const resources = {
     stats: statsEn,
     working_hours: workingHoursEn,
     sidebar: sidebarEn,
+    header: headerEn,
   },
   ar: {
     article: articlesAr,
@@ -84,6 +87,7 @@ const resources = {
     stats: statsAr,
     working_hours: workingHoursAr,
     sidebar: sidebarAr,
+    header: headerAr,
   },
 };
 

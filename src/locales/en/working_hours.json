@@ -7,6 +7,17 @@
   "DIALOG_DESC": "Specify From/To Working day information",
   "DAY": "day",
 
+  "DEL": "Del",
+  "COPY": "Copy",
+
+  "Sun": "Sun",
+  "Mon": "Mon",
+  "Tue": "Tue",
+  "Wed": "Wed",
+  "The": "The",
+  "Fri": "Fri",
+  "Sat": "Sat",
+
   "FROM": "From",
   "TO": "To",
   "FROM_IN_MINUTES": "From (in minutes)",

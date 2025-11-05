@@ -46,9 +46,16 @@ a {
   }
 } */
 
+:lang(ar),
+[dir="rtl"] {
+  font-family: var(--font-cairo), sans-serif;
+}
+
 /* ---break--- */
 @layer base {
   :root {
+    font-family: var(--font-geist-sans), sans-serif; /* default (English) */
+
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
