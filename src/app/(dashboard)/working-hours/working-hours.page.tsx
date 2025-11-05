@@ -37,8 +37,6 @@ function WorkingHoursPage() {
 
   const { t } = useTranslation("working_hours");
 
-  console.log("test working hours", dateRanges);
-
   return (
     <PageContent>
       {updatedRanges?.length > 0 && (
@@ -94,6 +92,7 @@ function WorkingHoursPage() {
       ))}
 
       <Button
+        className="mt-5"
         onClick={() => {
           setIsOpen(true);
           setDialogContent(<CreateDayRangeDialog />);

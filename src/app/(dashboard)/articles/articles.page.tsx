@@ -26,8 +26,6 @@ function ArticlesPage() {
     setArt(articles!);
   }, [articles]);
 
-  console.log(articles);
-
   return (
     <PageContent>
       <Button

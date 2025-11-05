@@ -109,21 +109,17 @@ function copRangeToDateRangesOperation(
   },
   lastRangeId
 ) {
-  console.log("range", range);
-
   dateRanges = dateRanges.map((dateRange) => {
     if (dateRange.id !== idDateRange) {
       dateRange.ranges.push({
         id: lastRangeId,
         from: range.from,
         to: range.to,
-        fromMinutes: range.fromInMinutes,
-        toMinutes: range.toInMinutes,
+        fromMinutes: range.fromMinutes,
+        toMinutes: range.toMinutes,
       });
       lastRangeId++;
     }
-
-    console.log("dateranges", dateRanges);
 
     return dateRange;
   });

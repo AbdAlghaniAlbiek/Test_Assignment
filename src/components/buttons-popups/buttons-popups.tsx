@@ -142,8 +142,8 @@ export function ShredButton({
       ? {
           style: {
             ...(props?.width && {
-              width: actualButtonWidth,
-              height: actualButtonWidth,
+              width: props.width,
+              height: props.width,
             }),
             // ...(actionStatus.status === 'Other' && {
             //   [`--${actionStatus?.otherBgColor}`]: actionStatus?.otherBgColor,
@@ -217,7 +217,10 @@ export function ButtonSheet({
       <SheetTrigger asChild>
         <ShredButton props={buttonProps} actionStatus={actionStatus} />
       </SheetTrigger>
-      <SheetContent style={{ width: actualWidth }}>
+      <SheetContent
+        style={{ width, maxWidth: width }}
+        className="overflow-y-auto"
+      >
         <SheetHeader>
           <SheetTitle>{title}</SheetTitle>
           {description && <SheetDescription>{description}</SheetDescription>}
@@ -252,18 +255,15 @@ export function ButtonDialog({
     maxHeight = 600,
   },
 }: IButtonDialogProps) {
-  const { actualWidth } = useActualWidth({
-    width,
-    largeScreenWidth,
-    smallScreenWidth,
-  });
-
   return (
     <Dialog>
       <DialogTrigger asChild>
         <ShredButton props={buttonProps} actionStatus={actionStatus} />
       </DialogTrigger>
-      <DialogContent style={{ width: actualWidth, maxHeight }}>
+      <DialogContent
+        style={{ width, maxWidth: width, maxHeight }}
+        className="overflow-auto"
+      >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}

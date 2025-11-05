@@ -7,8 +7,8 @@
   "DIALOG_DESC": "Specify From/To Working day information",
   "DAY": "day",
 
-  "FROM": "From (in hours)",
-  "TO": "To (in hours)",
+  "FROM": "From",
+  "TO": "To",
   "FROM_IN_MINUTES": "From (in minutes)",
   "TO_IN_MINUTES": "To (in minutes)",
   "SUBMIT": "Submit",

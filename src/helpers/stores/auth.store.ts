@@ -6,13 +6,19 @@ interface IUserAuth {
     email?: string;
     profileImage: any;
     password?: string;
+    isLoggedIn: boolean;
   };
   setUserAuth: () => void;
   clearUserAuth: () => void;
 }
 
 export const useAuthStore = create<IUserAuth>((set) => ({
-  auth: { email: "ahmad@gmail.com", password: "123456", name: "Ahmad Madani" },
+  auth: {
+    email: "ahmad@gmail.com",
+    password: "123456",
+    name: "Ahmad Madani",
+    isLoggedIn: false,
+  },
   setUserAuth: () =>
     set((state: unknown) => ({
       auth: {
@@ -20,6 +26,7 @@ export const useAuthStore = create<IUserAuth>((set) => ({
         email: "ahmad@gmail.com",
         password: "1234",
         profileImage: "/default-profile-image.png",
+        isLoggedIn: true,
       },
     })),
   clearUserAuth: () => set((state: any) => ({ ...state, auth: {} })),

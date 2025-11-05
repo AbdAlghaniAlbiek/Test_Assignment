@@ -15,71 +15,22 @@ import {
   daysItems,
   useWorkingHoursStore,
 } from "@/helpers/stores/working-hours.store";
+import { convertSegmentPathToStaticExportFilename } from "next/dist/shared/lib/segment-cache/segment-value-encoding";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast, Toaster } from "sonner";
-
-// interface IDayRangeDialog {
-//   id: number;
-//   default: {
-//     from?: string;
-//     to?: string;
-//   };
-
-//   setDateRanges: any;
-// }
-
-// function DayRangeDialog({
-//   default: { from: defaultFrom, to: defaultTo },
-//   setDateRanges,
-//   id,
-// }: IDayRangeDialog) {
-//   const [from, setFrom] = useState(defaultFrom);
-//   const [to, setTo] = useState(defaultTo);
-
-//   const onSubmit = () => {
-//     if (Number.parseInt(from) > 60 || Number.parseInt(to) > 60) {
-//       toast.error(`From/To must be 60 minutes or less`);
-//       return;
-//     }
-
-//     if (Number.parseInt(from) > Number.parseInt(to)) {
-//       toast.error(`From should be less than to`);
-//       return;
-//     }
-
-//     setDateRanges((old) => [
-//       ...old.map((item) => (item.id === id ? { ...item, from, to } : item)),
-//     ]);
-//   };
-
-//   return (
-//     <div>
-//       <form onSubmit={onSubmit} className="flex flex-col gap-4">
-//         <div>
-//           <Label htmlFor="from">From (in minutes)</Label>
-//           <Input
-//             id="from"
-//             placeholder="From"
-//             value={from}
-//             onChange={(e) => setFrom(e.target.value)}
-//           />
-//         </div>
-
-//         <div>
-//           <Label htmlFor="to">To (in minutes)</Label>
-//           <Input
-//             id="to"
-//             placeholder="To"
-//             value={to}
-//             onChange={(e) => setTo(e.target.value)}
-//           />
-//         </div>
-//         <Button type="submit">Submit</Button>
-//       </form>
-//     </div>
-//   );
-// }
+import {
+  TCreateWorkingHoursSchema,
+  useCreateWorkingHourForm,
+} from "../forms/working-hours.schema";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 function CreateDayRangeDialog() {
   const {
@@ -90,60 +41,72 @@ function CreateDayRangeDialog() {
     rangeIds,
   } = useWorkingHoursStore();
 
-  const [from, setFrom] = useState(copiedDateRang.from ?? 0);
-  const [fromMinutes, setFromMinutes] = useState(
-    copiedDateRang.fromMinutes ?? 0
-  );
-  const [to, setTo] = useState(copiedDateRang.to ?? 0);
-  const [toMinutes, setToMinutes] = useState(copiedDateRang.toMinutes ?? 0);
-  const [selectedDay, setSelectedDay] = useState("");
+  const { watch, ...form } = useCreateWorkingHourForm();
   const [disabledButton, setDisabledButton] = useState(false);
 
+  const from = watch("from");
+  const to = watch("to");
+  const day = watch("day");
+
   useEffect(() => {
+    console.log("Enter");
+    console.log(from);
+    console.log(to);
+
     dateRanges.forEach((dateRange) => {
-      if (dateRange.day === selectedDay) {
-        const overlappedTimeRange = dateRange.ranges.some(
-          (range) =>
-            from >= range.from &&
-            to <= range.to &&
-            fromMinutes >= range.fromMinutes &&
-            toMinutes <= range.toMinutes
-        );
-        if (overlappedTimeRange) {
-          setDisabledButton(true);
-          toast.error(
-            `There is overlapping between the date you specified with another exist one`
-          );
-        } else {
-          setDisabledButton(false);
+      if (day) {
+        if (dateRange.day === JSON.parse(day)) {
+          const overlappedTimeRange = dateRange.ranges.some((range) => {
+            if (
+              Number.parseInt(from.split(":")[0]) >= range.from &&
+              Number.parseInt(to.split(":")[0]) <= range.to &&
+              Number.parseInt(from.split(":")[1]) >= range.fromMinutes &&
+              Number.parseInt(to.split(":")[1]) <= range.toMinutes
+            ) {
+              return true;
+            }
+          });
+          if (overlappedTimeRange) {
+            setDisabledButton(true);
+            toast.error(
+              `There is overlapping between the date you specified with another exist one`
+            );
+          } else {
+            setDisabledButton(false);
+          }
         }
       }
     });
-  }, [from, to, fromMinutes, toMinutes, selectedDay]);
+  }, [from, to, day, watch, dateRanges]);
 
   const { t } = useTranslation("working_hours");
 
-  const onSubmit = (e) => {
-    e.preventDefault();
+  const onSubmit = (data: TCreateWorkingHoursSchema) => {
+    // e.preventDefault();
 
-    if (from > 12 || to > 12 || to < 1 || from < 1) {
-      toast.error(`From and To should be between 1 and 12 hours`);
-      return;
-    }
+    // if (from > 24 || to > 24 || to < 1 || from < 1) {
+    //   toast.error(`From and To should be between 1 and 24 hours`);
+    //   return;
+    // }
 
-    if (
-      fromMinutes > 60 ||
-      toMinutes > 60 ||
-      toMinutes < 1 ||
-      fromMinutes < 1
-    ) {
-      toast.error(`From and To should be between 1 and 60 minutes`);
-      return;
-    }
+    // if (
+    //   fromMinutes > 60 ||
+    //   toMinutes > 60 ||
+    //   toMinutes < 1 ||
+    //   fromMinutes < 1
+    // ) {
+    //   toast.error(`From and To should be between 1 and 60 minutes`);
+    //   return;
+    // }
 
     dateRanges.forEach((dateRang) => {
-      if (dateRang.day === selectedDay) {
-        addDateRange(dateRang.id!, { from, to, fromMinutes, toMinutes });
+      if (dateRang.day == JSON.parse(data.day)) {
+        addDateRange(dateRang.id!, {
+          from: Number.parseInt(data.from.split(":")[0]),
+          to: Number.parseInt(data.to.split(":")[0]),
+          fromMinutes: Number.parseInt(data.from.split(":")[1]),
+          toMinutes: Number.parseInt(data.to.split(":")[1]),
+        });
         addRangeIds(rangeIds);
       }
     });
@@ -151,72 +114,97 @@ function CreateDayRangeDialog() {
 
   return (
     <div>
-      <form onSubmit={onSubmit} className="flex flex-col gap-4">
-        <div className="flex flex-row gap-2">
-          <div>
-            <Label htmlFor="from">{t("FROM")}</Label>
-            <Input
-              id="from"
-              placeholder={t("FROM")}
-              value={from}
-              onChange={(e) => setFrom(Number.parseInt(e.target.value))}
-            />
-          </div>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4"
+        >
+          <FormField
+            control={form.control}
+            name="from"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("FROM")}</FormLabel>
+                <FormControl>
+                  <Input
+                    id="from"
+                    type="time"
+                    placeholder={t("FROM")}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-          <div>
-            <Label htmlFor="from">{t("FROM_IN_MINUTES")}</Label>
-            <Input
-              id="from"
-              placeholder={t("FROM_IN_MINUTES")}
-              value={fromMinutes}
-              onChange={(e) => setFromMinutes(Number.parseInt(e.target.value))}
-            />
-          </div>
-        </div>
+          <FormField
+            control={form.control}
+            name="to"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("TO")}</FormLabel>
+                <FormControl>
+                  <Input id="to" placeholder={t("TO")} type="time" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <div className="flex flex-row gap-2">
-          <div>
-            <Label htmlFor="to">{t("TO")}</Label>
-            <Input
-              id="to"
-              placeholder={t("TO")}
-              value={to}
-              onChange={(e) => setTo(Number.parseInt(e.target.value))}
-            />
-          </div>
-          <div>
-            <Label htmlFor="to">{t("TO_IN_MINUTES")}</Label>
-            <Input
-              id="to"
-              placeholder={t("TO_IN_MINUTES")}
-              value={toMinutes}
-              onChange={(e) => setToMinutes(Number.parseInt(e.target.value))}
-            />
-          </div>
-        </div>
+          <FormField
+            control={form.control}
+            name="day"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("DAY")}</FormLabel>
+                <FormControl>
+                  <Select onValueChange={(value) => field.onChange(value)}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Select Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {daysItems.map((item) => (
+                          <SelectItem
+                            key={item.id}
+                            value={JSON.stringify(item)}
+                          >
+                            {item}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <div>
-          <Label htmlFor="category">{t("DAY")}</Label>
-          <Select onValueChange={(value) => setSelectedDay(value)}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select Day" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {daysItems.map((item, i) => (
-                  <SelectItem key={i} value={item}>
-                    {item}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
+          {/* <div>
+            <Label htmlFor="category">{t("DAY")}</Label>
+            <Select onValueChange={(value) => setSelectedDay(value)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select Day" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {daysItems.map((item, i) => (
+                    <SelectItem key={i} value={item}>
+                      {item}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div> */}
 
-        <Button type="submit" disabled={disabledButton}>
-          {t("SUBMIT")}
-        </Button>
-      </form>
+          <Button type="submit" disabled={disabledButton}>
+            {t("SUBMIT")}
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 }

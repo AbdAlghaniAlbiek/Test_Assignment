@@ -6,11 +6,11 @@ import { tagsItems } from "../componenets/tag";
 const createArticleSchema = z.object({
   title: z.string().min(4),
   category: z.string(),
-  tags: z
-    .array(
-      z.object({ id: z.number(), label: z.string(), isSelected: z.boolean() })
-    )
-    .optional(),
+  // tags: z
+  //   .array(
+  //     z.object({ id: z.number(), label: z.string(), isSelected: z.boolean() })
+  //   )
+  //   .optional(),
   isPublished: z.boolean().optional(),
   content: z.string().min(6),
   schedulePublishedDate: z.date().nullable().optional(),

@@ -89,22 +89,6 @@ IDayRange) {
         >
           Copy
         </Button>
-        {/* <Button
-          className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded-md"
-          onClick={() => {
-            setDialogContent(
-              <UpdateDayRange
-                from={from}
-                to={to}
-                rangeId={id}
-                fromMinutes={fromMinutes}
-                toMinutes={toMinutes}
-              />
-            );
-          }}
-        >
-          Mod
-        </Button> */}
       </div>
       <p>
         {from}:{fromMinutes} - {to}:{toMinutes}

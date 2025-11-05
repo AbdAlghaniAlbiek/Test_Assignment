@@ -62,6 +62,7 @@ import {
   TCreateArticleSchema,
   useCreateArticleForm,
 } from "../forms/article.schema";
+import { IFileUploaderFile } from "@craft-code/file-uploader";
 
 // const articleSchema = z.object({
 //   title: z.string(),
@@ -92,15 +93,11 @@ import {
 // };
 
 function CreateArticlePage() {
-  // const [title, setTitle] = useState("");
-  // const [category, setCategory] = useState("");
-  // const [coverImage, setCoverImage] = useState();
-  // const [content, setContent] = useState("");
-  // const [isPublished, setIsPublished] = useState(false);
-  // const [schedulePublishDate, setSchedulePublishDate] = useState();
-
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
   const [tags, setTags] = useState(tagsItems);
+  const [files, setFiles] = useState<IFileUploaderFile[]>([]);
+
   const { addArticle, articles } = useArticlesStore();
   const router = useRouter();
 
@@ -125,7 +122,7 @@ function CreateArticlePage() {
       id: articles[articles?.length - 1]?.id
         ? articles[articles?.length - 1]?.id + 1
         : 1,
-      coverImage: "",
+      coverImage: files[0],
     });
 
     router.back();
@@ -137,7 +134,7 @@ function CreateArticlePage() {
         onSubmit={onSubmit}
         form={form}
         isCreateState={true}
-        states={{ tags, setTags }}
+        states={{ tags, setTags, files, setFiles }}
         isButtonDisabled={isButtonDisabled}
       />
     </PageContent>

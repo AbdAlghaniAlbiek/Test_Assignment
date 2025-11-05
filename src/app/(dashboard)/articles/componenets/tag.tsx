@@ -4,17 +4,17 @@ import React from "react";
 export const tagsItems = [
   {
     id: 1,
-    label: "tag1",
+    label: "Food",
     isSelected: false,
   },
   {
     id: 2,
-    label: "tag2",
+    label: "Fries",
     isSelected: false,
   },
   {
     id: 3,
-    label: "tag3",
+    label: "Drinks",
     isSelected: false,
   },
 ];

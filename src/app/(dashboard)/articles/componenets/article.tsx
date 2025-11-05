@@ -5,13 +5,17 @@ import React, { useState } from "react";
 import dayjs from "dayjs";
 import { Download, Eye, Trash } from "lucide-react";
 import ReactPDF from "@react-pdf/renderer";
-import ArticlePDF from "./article-details.component";
+const ArticlePDF = dynamic(() => import("./article-pdf.component"), {
+  ssr: false,
+  loading: () => <p>Loading ...</p>,
+});
 import generatePDF, { usePDF } from "react-to-pdf";
 import { useTranslation } from "react-i18next";
 import {
   ButtonDialog,
   ButtonSheet,
   DeleteButtonAlertDialog,
+  ShredButton,
 } from "@/components/buttons-popups/buttons-popups";
 import ArticleDetails from "./article-details.component";
 import { convertSegmentPathToStaticExportFilename } from "next/dist/shared/lib/segment-cache/segment-value-encoding";
@@ -21,6 +25,9 @@ import {
   TUpdateArticleSchema,
   useUpdateArticleForm,
 } from "../forms/article.schema";
+import dynamic from "next/dynamic";
+import { tagsItems } from "./tag";
+import { withAuth } from "@/helpers/security/auth.security";
 
 interface IArticle {
   article: Article;
@@ -28,12 +35,19 @@ interface IArticle {
 
 function ArticleComponent({ article }: IArticle) {
   const form = useUpdateArticleForm();
-  const [setTags, tags] = useState<{ id: number; label: string }[]>(
-    article.tags
+  const [tags, setTags] = useState(
+    tagsItems.map((item) => ({
+      ...item,
+      isSelected: article.tags.some((t) => {
+        if (t.id === item.id) return t.isSelected;
+      }),
+    }))
   );
 
   const { removeArticle, forceRender, updateArticle } = useArticlesStore();
   const { t } = useTranslation("article");
+
+  const [files, setFiles] = useState();
 
   const onSubmit = (data: TUpdateArticleSchema) => {
     try {
@@ -45,9 +59,9 @@ function ArticleComponent({ article }: IArticle) {
         schedulePublishDate:
           data.schedulePublishedDate ?? article.schedulePublishDate,
         publishedAt: data.schedulePublishedDate ? null : new Date(),
-        coverImage: "",
+        coverImage: article.coverImage,
         id: article.id,
-        tags: article.tags,
+        tags: tags ?? article.tags,
       });
 
       // form.reset();
@@ -85,6 +99,7 @@ function ArticleComponent({ article }: IArticle) {
           dialogProps={{
             title: "Article Info",
             content: <ArticleDetails article={article} />,
+            width: 600,
           }}
         />
         <ButtonSheet
@@ -92,14 +107,15 @@ function ArticleComponent({ article }: IArticle) {
           buttonProps={{ rounded: "rounded-full", width: 30 }}
           sheetProps={{
             title: "Article Data",
+            width: 500,
             content: (
               <ArticleForm
                 isCreateState={false}
-                states={{ setTags, tags }}
+                states={{ setTags, tags, files, setFiles }}
                 form={form}
                 onSubmit={onSubmit}
                 defaultValues={{
-                  tag: article.tags,
+                  tags: article.tags,
                   category: article.category,
                   content: article.content,
                   isPublished: article.publishStatus,
@@ -118,6 +134,25 @@ function ArticleComponent({ article }: IArticle) {
             deleteEntityAction: () => {
               removeArticle(article.id);
             },
+          }}
+        />
+
+        {/* 
+        <ShredButton
+          actionStatus={{ status: "Other", otherIcon: <Download /> }}
+          props={{ rounded: "rounded-full", width: 30 }}
+          onClick={() =>
+            ReactPDF.render(<ArticlePDF article={article} />, `article.pdf`)
+          }
+        /> */}
+
+        <ButtonDialog
+          actionStatus={{ status: "Read" }}
+          buttonProps={{ rounded: "rounded-full", width: 30 }}
+          dialogProps={{
+            title: "Article PDF",
+            width: 1000,
+            content: <ArticlePDF article={article} />,
           }}
         />
       </div>

@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import { Download } from "lucide-react";
 import generatePDF, { usePDF } from "react-to-pdf";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import Image from "next/image";
 
 interface IArticlePDF {
   article: Article;
@@ -17,6 +18,15 @@ function ArticleDetails({ article }: IArticlePDF) {
   return (
     <ScrollArea>
       <div className="flex flex-col gap-5" ref={targetRef}>
+        {article.coverImage && (
+          <Image
+            src={article?.coverImage?.url ?? ""}
+            width={50}
+            height={50}
+            alt="alternative"
+          />
+        )}
+
         <p>
           <b>Title: </b>
           {article.title}
@@ -61,7 +71,7 @@ function ArticleDetails({ article }: IArticlePDF) {
           <div dangerouslySetInnerHTML={{ __html: article.content }}></div>
         </div>
 
-        <div className="flex flex-row gap-3">
+        {/* <div className="flex flex-row gap-3">
           <b>Download: </b>
           <Download
             width={20}
@@ -75,7 +85,7 @@ function ArticleDetails({ article }: IArticlePDF) {
               generatePDF(targetRef, { filename: "article.pdf" })
             }
           />
-        </div>
+        </div> */}
       </div>
     </ScrollArea>
   );

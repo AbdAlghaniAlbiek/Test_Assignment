@@ -1,7 +1,7 @@
 "use client";
 
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Cairo } from "next/font/google";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import "./globals.css";
 import { ThemeProvider, useTheme } from "next-themes";
@@ -19,6 +19,11 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const cairoSans = Cairo({
+  variable: "--font-cairo-mono",
+  subsets: ["arabic"],
 });
 
 // export const metadata: Metadata = {
@@ -47,7 +52,7 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable}`}
+        className={`${geistSans.variable} ${geistMono.variable} ${cairoSans.variable}`}
         lang={language === "English" ? "en" : "ar"}
         dir={language === "English" ? "ltr" : "rtl"}
       >
