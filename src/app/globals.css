@@ -54,7 +54,7 @@ a {
 /* ---break--- */
 @layer base {
   :root {
-    font-family: var(--font-geist-sans), sans-serif; /* default (English) */
+    /* font-family: var(--font-geist-sans), sans-serif; default (English) */
 
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;

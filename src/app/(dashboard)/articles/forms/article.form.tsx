@@ -216,7 +216,6 @@ function ArticleForm<T>({
                           }
                           id="isPublished"
                           onCheckedChange={(checked) => {
-                            console.log("here", check);
                             field.onChange(checked);
                           }}
                           defaultChecked={defaultValues?.isPublished}

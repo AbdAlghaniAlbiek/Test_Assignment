@@ -97,7 +97,7 @@ function ArticleComponent({ article }: IArticle) {
           actionStatus={{ status: "Read" }}
           buttonProps={{ rounded: "rounded-full", width: 30 }}
           dialogProps={{
-            title: "Article Info",
+            title: t("ARTICLE_INFO"),
             content: <ArticleDetails article={article} />,
             width: 600,
           }}
@@ -106,7 +106,7 @@ function ArticleComponent({ article }: IArticle) {
           actionStatus={{ status: "Update" }}
           buttonProps={{ rounded: "rounded-full", width: 30 }}
           sheetProps={{
-            title: "Article Data",
+            title: t("ARTICLE_DATA"),
             width: 500,
             content: (
               <ArticleForm
@@ -129,20 +129,22 @@ function ArticleComponent({ article }: IArticle) {
         <DeleteButtonAlertDialog
           buttonProps={{ rounded: "rounded-full", width: 30 }}
           dialogProps={{
-            title: "Delete Request",
-            description: "Do you want to delete this article",
+            title: t("DELETE_REQUEST"),
+            description: t("DELETE_REQUEST_DESC"),
             deleteEntityAction: () => {
               removeArticle(article.id);
             },
           }}
         />
 
-        {/* 
-        <ShredButton
+        {/* <ShredButton
           actionStatus={{ status: "Other", otherIcon: <Download /> }}
-          props={{ rounded: "rounded-full", width: 30 }}
+          props={{ rounded: "rounded-full", width: 30, size: "sm" }}
           onClick={() =>
-            ReactPDF.render(<ArticlePDF article={article} />, `article.pdf`)
+            ReactPDF.renderToFile(
+              <ArticlePDF article={article} />,
+              `article.pdf`
+            )
           }
         /> */}
 
@@ -150,7 +152,7 @@ function ArticleComponent({ article }: IArticle) {
           actionStatus={{ status: "Read" }}
           buttonProps={{ rounded: "rounded-full", width: 30 }}
           dialogProps={{
-            title: "Article PDF",
+            title: t("ARTICLE_PDF"),
             width: 1000,
             content: <ArticlePDF article={article} />,
           }}

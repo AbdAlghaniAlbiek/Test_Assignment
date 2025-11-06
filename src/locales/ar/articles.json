@@ -6,8 +6,19 @@
   "TITLE": "العنوان",
   "CATEGORY": "المجموعة",
   "IS_PUBLISHED": "تم النشر",
+  "PUBLISHED_AT": "تم نشره عند",
   "SCHEDULE_PUBLISH_AT": "جدولة النشر حتى",
   "TAGS": "تاغات",
   "CONTENT": "المحتوى",
-  "SUBMIT": "تأكيد"
+  "SUBMIT": "تأكيد",
+
+  "ARTICLE_DATA": "معلومات المقالة",
+  "ARTICLE_PDF": "مقالة PDF",
+  "ARTICLE_INFO": "تفاصيل المقالة",
+
+  "DELETE_REQUEST": "طلب حذف",
+  "DELETE_REQUEST_DESC": "هل تريد حذف هذه المقالة ؟",
+
+  "CANCEL": "الغاء",
+  "CONTINUE": "متابعة"
 }

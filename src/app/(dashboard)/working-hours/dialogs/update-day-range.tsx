@@ -39,8 +39,6 @@ function UpdateDayRange({
 
   const form = useUpdateWorkingHourForm();
 
-  console.log(defaultFrom, defaultTo, defaultFromMinutes, defaultToMinutes);
-
   const onSubmit = (data: TUpdateWorkingHoursSchema) => {
     // if (from > to) {
     //   toast.error(`From should be less than To`);

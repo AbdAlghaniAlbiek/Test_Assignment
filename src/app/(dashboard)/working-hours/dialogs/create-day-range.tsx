@@ -49,10 +49,6 @@ function CreateDayRangeDialog() {
   const day = watch("day");
 
   useEffect(() => {
-    console.log("Enter");
-    console.log(from);
-    console.log(to);
-
     dateRanges.forEach((dateRange) => {
       if (day) {
         if (dateRange.day === JSON.parse(day)) {

@@ -103,7 +103,7 @@ function Header({ routesToIgnore, toggleShowingAppName }: IHeader) {
                         </Link>
                       </BreadcrumbLink>
                     </BreadcrumbItem>
-                    <BreadcrumbSeparator />
+                    <BreadcrumbSeparator className="rtl:rotate-180" />
                   </Fragment>
                 )
             )}
@@ -111,7 +111,7 @@ function Header({ routesToIgnore, toggleShowingAppName }: IHeader) {
             {separatedFullPath[separatedFullPath.length - 1] && (
               <BreadcrumbItem>
                 <BreadcrumbPage>
-                  {t(`${lastPathLink}`)}
+                  {t(`${separatedFullPath[separatedFullPath.length - 1]}`)}
                   {/* {snakeToPascalCase(
                     separatedFullPath[separatedFullPath.length - 1]
                   )} */}

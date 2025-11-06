@@ -1,5 +1,5 @@
 import { Article } from "@/helpers/stores/articles.store";
-import React from "react";
+import React, { useTransition } from "react";
 import Tag from "./tag";
 import { Label } from "@/components/ui/label";
 import dayjs from "dayjs";
@@ -7,6 +7,7 @@ import { Download } from "lucide-react";
 import generatePDF, { usePDF } from "react-to-pdf";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
 
 interface IArticlePDF {
   article: Article;
@@ -14,7 +15,7 @@ interface IArticlePDF {
 
 function ArticleDetails({ article }: IArticlePDF) {
   const { toPDF, targetRef } = usePDF({ filename: "article-details.pdf" });
-
+  const { t } = useTranslation("article");
   return (
     <ScrollArea>
       <div className="flex flex-col gap-5" ref={targetRef}>
@@ -28,27 +29,27 @@ function ArticleDetails({ article }: IArticlePDF) {
         )}
 
         <p>
-          <b>Title: </b>
+          <b>{t("TITLE")}: </b>
           {article.title}
         </p>
 
         <p>
-          <b>Category: </b>
+          <b>{t("CATEGORY")}: </b>
           {article.category.name}
         </p>
 
         <p>
-          <b>Is Published: </b> {JSON.stringify(article.publishStatus)}
+          <b>{t("IS_PUBLISHED")}: </b> {JSON.stringify(article.publishStatus)}
         </p>
 
         <p>
-          <b>Published At: </b>
+          <b>{t("PUBLISHED_AT")}: </b>
           {dayjs(article.publishedAt).format("YYYY-MM-DD")}
         </p>
 
         <div>
           <p>
-            <b>Schedule Publish At: </b>
+            <b>{t("SCHEDULE_PUBLISH_AT")}: </b>
             {article.schedulePublishDate ? (
               dayjs(article.schedulePublishDate).format("YYYY-MM-DD")
             ) : (
@@ -58,7 +59,7 @@ function ArticleDetails({ article }: IArticlePDF) {
         </div>
 
         <div>
-          <b>Tags</b>
+          <b>{t("TAGS")}: </b>
           <div className="flex flex-row gap-2">
             {article?.tags?.map((tag, i) => (
               <Tag key={i} label={tag.label} />
@@ -67,7 +68,7 @@ function ArticleDetails({ article }: IArticlePDF) {
         </div>
 
         <div>
-          <b>Content</b>
+          <b>{t("CONTENT")}: </b>
           <div dangerouslySetInnerHTML={{ __html: article.content }}></div>
         </div>
 
