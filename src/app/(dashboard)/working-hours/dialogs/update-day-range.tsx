@@ -45,11 +45,23 @@ function UpdateDayRange({
     //   return;
     // }
 
+    const from = data.from
+      ? Number.parseInt(data.from.split(":")[0])
+      : Number.parseInt(defaultFrom);
+    const to = data.to
+      ? Number.parseInt(data.to.split(":")[0])
+      : Number.parseInt(defaultTo);
+
+    if (from > to) {
+      toast.error(`From should be greater than To`);
+      return;
+    }
+
     addToUpdatedRanges({
       id: rangeId,
       from: data?.from
         ? Number.parseInt(data?.from?.split(":")[0])
-        : Number.parseFloat(defaultFrom),
+        : Number.parseInt(defaultFrom),
       to: data.to
         ? Number.parseInt(data.to.split(":")[0])
         : Number.parseInt(defaultTo),

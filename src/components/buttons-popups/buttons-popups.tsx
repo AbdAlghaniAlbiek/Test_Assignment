@@ -46,6 +46,7 @@ import {
   IActualWidthScreenSizes,
   useActualWidth,
 } from "@/hooks/use-actual-width";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 type ActionStatusType = "Create" | "Update" | "Read" | "Other"; // Don't use delete
 
@@ -54,6 +55,10 @@ interface ActionStatus {
   otherIcon?: React.ReactNode;
   otherBgHoverColor?: string;
   otherBgColor?: string;
+}
+
+interface ITooltipProps {
+  content: string;
 }
 
 const showIcon = (actionStatus: ActionStatus, width?: number) => {
@@ -126,11 +131,13 @@ interface ISharedButtonProps {
   props?: IButtonProps & IActualWidthScreenSizes;
   actionStatus: ActionStatus;
   onClick?: () => void;
+  tooltipProps?: ITooltipProps;
 }
 export function ShredButton({
   actionStatus,
   props,
   onClick,
+  tooltipProps,
 }: ISharedButtonProps) {
   const { actualWidth: actualButtonWidth } = useActualWidth({
     width: props?.width ?? 0,
@@ -156,21 +163,28 @@ export function ShredButton({
   const buttonClickEvent = onClick ? { onClick } : {};
 
   return (
-    <Button
-      size={props?.size ?? "default"}
-      className={cn(
-        chooseColor(actionStatus),
-        chooseHoverColor(actionStatus),
-        props?.rounded ?? "rounded-md",
-        props?.contentDirection === "vertical" ? "flex-col" : "flex row",
-        "gap-2"
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          size={props?.size ?? "default"}
+          className={cn(
+            chooseColor(actionStatus),
+            chooseHoverColor(actionStatus),
+            props?.rounded ?? "rounded-md",
+            props?.contentDirection === "vertical" ? "flex-col" : "flex row",
+            "gap-2"
+          )}
+          {...buttonProps}
+          {...buttonClickEvent}
+        >
+          {showIcon(actionStatus, props?.iconWidth)}
+          {props?.content ? <p>{props?.content}</p> : null}
+        </Button>
+      </TooltipTrigger>
+      {tooltipProps?.content && (
+        <TooltipContent>{tooltipProps.content}</TooltipContent>
       )}
-      {...buttonProps}
-      {...buttonClickEvent}
-    >
-      {showIcon(actionStatus, props?.iconWidth)}
-      {props?.content ? <p>{props?.content}</p> : null}
-    </Button>
+    </Tooltip>
   );
 }
 
@@ -182,9 +196,12 @@ export interface IButtonSheetProps {
     description?: string | React.ReactNode;
     content: React.ReactNode;
   } & IActualWidthScreenSizes;
+  tooltip?: ITooltipProps;
 }
+
 export function ButtonSheet({
   actionStatus,
+  tooltip,
   buttonProps,
   sheetProps: {
     title,
@@ -215,7 +232,11 @@ export function ButtonSheet({
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <ShredButton props={buttonProps} actionStatus={actionStatus} />
+        <ShredButton
+          props={buttonProps}
+          actionStatus={actionStatus}
+          tooltipProps={tooltip}
+        />
       </SheetTrigger>
       <SheetContent
         style={{ width, maxWidth: width }}
@@ -235,6 +256,7 @@ export function ButtonSheet({
 export interface IButtonDialogProps {
   actionStatus: ActionStatus;
   buttonProps?: IButtonProps & IActualWidthScreenSizes;
+  tooltip?: ITooltipProps;
   dialogProps: {
     title: string | React.ReactNode;
     description?: string | React.ReactNode;
@@ -254,12 +276,21 @@ export function ButtonDialog({
     width = 425,
     maxHeight = 600,
   },
+  tooltip,
 }: IButtonDialogProps) {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <ShredButton props={buttonProps} actionStatus={actionStatus} />
-      </DialogTrigger>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <DialogTrigger asChild>
+            <ShredButton
+              props={buttonProps}
+              actionStatus={actionStatus}
+              tooltipProps={tooltip}
+            />
+          </DialogTrigger>
+        </TooltipTrigger>
+      </Tooltip>
       <DialogContent
         style={{ width, maxWidth: width, maxHeight }}
         className="overflow-auto"
@@ -284,16 +315,26 @@ export interface IButtonPopoverProps {
   popoverProps: {
     content: React.ReactNode;
   };
+  tooltip?: ITooltipProps;
 }
 export function ButtonPopoverProps({
   actionStatus,
   buttonProps,
   popoverProps: { content },
+  tooltip,
 }: IButtonPopoverProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        {ShredButton({ actionStatus, props: buttonProps })}
+        <Tooltip>
+          <TooltipTrigger>
+            <ShredButton
+              props={buttonProps}
+              actionStatus={actionStatus}
+              tooltipProps={tooltip}
+            />
+          </TooltipTrigger>
+        </Tooltip>
       </PopoverTrigger>
       <PopoverContent>{content}</PopoverContent>
     </Popover>
@@ -304,26 +345,30 @@ export interface IButtonGoToPageProps {
   actionStatus: ActionStatus;
   buttonProps?: IButtonProps & IActualWidthScreenSizes;
   goToPageFunction: () => void;
+  tooltip: ITooltipProps;
 }
 export function ButtonGoToPage({
   actionStatus,
   buttonProps,
   goToPageFunction,
+  tooltip,
 }: IButtonGoToPageProps) {
   return (
     <ShredButton
       actionStatus={actionStatus}
       props={buttonProps}
       onClick={goToPageFunction}
+      tooltipProps={tooltip}
     />
   );
 }
 
 interface IDeleteSharedButtonProps {
   props?: IButtonProps & IActualWidthScreenSizes;
+  tooltip?: ITooltipProps;
 }
 // Delete Button Popover and AlertDialog
-function DeleteSharedButton({ props }: IDeleteSharedButtonProps) {
+function DeleteSharedButton({ props, tooltip }: IDeleteSharedButtonProps) {
   const iconWidth = props?.iconWidth
     ? {
         style: {
@@ -338,7 +383,7 @@ function DeleteSharedButton({ props }: IDeleteSharedButtonProps) {
     smallScreenWidth: props?.smallScreenWidth,
   });
   const buttonWidth = props?.width
-    ? { style: { width: actualButtonWidth, height: actualButtonWidth } }
+    ? { style: { width: props.width, height: props.width } }
     : {};
 
   return (
@@ -355,6 +400,24 @@ function DeleteSharedButton({ props }: IDeleteSharedButtonProps) {
       <Trash2 {...iconWidth} />
       {props?.content && <p>{props?.content}</p>}
     </Button>
+    // <Tooltip>
+    //   <TooltipTrigger asChild>
+    //     <Button
+    //       size={props?.size ?? "default"}
+    //       className={cn(
+    //         "bg-red-500 hover:bg-red-600",
+    //         props?.rounded ?? "rounded-md",
+    //         props?.contentDirection === "vertical" ? "flex-col" : "flex row",
+    //         "gap-2"
+    //       )}
+    //       {...buttonWidth}
+    //     >
+    //       <Trash2 {...iconWidth} />
+    //       {props?.content && <p>{props?.content}</p>}
+    //     </Button>
+    //   </TooltipTrigger>
+    //   {tooltip && <TooltipContent>{tooltip.content}</TooltipContent>}
+    // </Tooltip>
   );
 }
 
@@ -363,17 +426,20 @@ export interface IDeleteButtonPopoverProps {
   confirmButtonText?: string;
   buttonProps?: IButtonProps & IActualWidthScreenSizes;
   deleteEntityAction: () => void;
+  tooltip?: ITooltipProps;
 }
 export function DeleteButtonPopover({
   deleteEntityAction,
   message,
   buttonProps,
   confirmButtonText = "confirm",
+  tooltip,
 }: IDeleteButtonPopoverProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        {DeleteSharedButton({ props: buttonProps })}
+        {DeleteSharedButton({ props: buttonProps, tooltip: tooltip })}
+        {/* <DeleteSharedButton props={buttonProps} tooltip={tooltip} /> */}
       </PopoverTrigger>
       <PopoverContent className="mt-1">
         <div className="flex flex-col gap-2">
@@ -395,6 +461,7 @@ export function DeleteButtonPopover({
 
 export interface IDeleteButtonAlertDialogProps {
   buttonProps?: IButtonProps & IActualWidthScreenSizes;
+  tooltip?: ITooltipProps;
   dialogProps: {
     title: string;
     description: string | React.ReactNode;
@@ -405,6 +472,7 @@ export interface IDeleteButtonAlertDialogProps {
 }
 export function DeleteButtonAlertDialog({
   buttonProps,
+  tooltip,
   dialogProps: {
     confirmButtonText = "Continue",
     title,
@@ -425,7 +493,8 @@ export function DeleteButtonAlertDialog({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        {DeleteSharedButton({ props: buttonProps })}
+        {DeleteSharedButton({ props: buttonProps, tooltip: tooltip })}
+        {/* <DeleteSharedButton props={buttonProps} tooltip={tooltip} /> */}
       </AlertDialogTrigger>
       <AlertDialogContent style={{ width: actualWidth }}>
         <AlertDialogHeader>

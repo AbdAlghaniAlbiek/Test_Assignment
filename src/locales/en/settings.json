@@ -3,5 +3,8 @@
   "NAME": "Name: ",
   "EMAIL": "Email: ",
   "THEME": "Theme",
-  "LANGUAGE": "Language"
+  "LANGUAGE": "Language",
+  "SUBMIT": "Submit",
+  "USER_INFO": "User Info",
+  "CHANGE_PROFILE": "Modify Profile"
 }

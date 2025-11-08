@@ -4,12 +4,17 @@ interface IUserAuth {
   auth?: {
     name?: string;
     email?: string;
-    profileImage: any;
+    profileImage?: any;
     password?: string;
-    isLoggedIn: boolean;
+    isLoggedIn?: boolean;
   };
   setUserAuth: () => void;
   clearUserAuth: () => void;
+  updateUserAuth: (userInfo: {
+    email?: string;
+    name?: string;
+    profileImage?: string;
+  }) => void;
 }
 
 export const useAuthStore = create<IUserAuth>((set) => ({
@@ -29,5 +34,7 @@ export const useAuthStore = create<IUserAuth>((set) => ({
         isLoggedIn: true,
       },
     })),
+  updateUserAuth: (userInfo) =>
+    set((state) => ({ ...state, auth: { ...state.auth, ...userInfo } })),
   clearUserAuth: () => set((state: any) => ({ ...state, auth: {} })),
 }));

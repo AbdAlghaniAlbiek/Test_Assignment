@@ -1,13 +1,16 @@
 "use client";
 
 import { Article } from "@/helpers/stores/articles.store";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Tag from "./tag";
 import { ta } from "zod/v4/locales";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Download } from "lucide-react";
 import generatePDF, { usePDF } from "react-to-pdf";
 import Image from "next/image";
+import { useAppSettingsStore } from "@/helpers/stores/settings.store";
+import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils";
 
 interface IArticlePDF {
   article: Article;
@@ -16,24 +19,38 @@ interface IArticlePDF {
 function ArticlePDF({ article }: IArticlePDF) {
   const { toPDF, targetRef } = usePDF({ filename: "article-details.pdf" });
 
+  const { theme: nextTheme, setTheme: setNextTheme } = useTheme();
+
+  const { theme } = useAppSettingsStore();
+  // useEffect(() => {
+  //   if (theme === "Dark") {
+  //     setNextTheme("light");
+  //   }
+  // }, [theme, setNextTheme]);
+
   return (
     <ScrollArea>
-      <div className="flex flex-col gap-2 relative p-2" ref={targetRef}>
+      <div
+        className={cn(
+          "flex flex-col gap-2 relative p-2 dark:bg-white dark:text-black"
+        )}
+        ref={targetRef}
+      >
         <Download
           width={20}
           height={20}
           className="cursor-pointer absolute top-0 right-0"
-          onClick={() =>
+          onClick={() => {
             //   ReactPDF.render(
             //     <ArticlePDF article={article} />,
             //     `${__dirname}/article.pdf`
             //   )
-            generatePDF(targetRef, { filename: "article.pdf" })
-          }
+            generatePDF(targetRef, { filename: "article.pdf" });
+          }}
         />
 
         {/** Image */}
-        {article?.coverImage && (
+        {article?.coverImage && article?.coverImage && (
           <Image
             className="m-auto"
             src={article?.coverImage?.url ?? ""}

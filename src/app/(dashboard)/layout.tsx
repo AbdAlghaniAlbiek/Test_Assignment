@@ -21,31 +21,16 @@ import { useTranslation } from "react-i18next";
 import { Cairo, Geist, Geist_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const cairoSans = Cairo({
-  variable: "--font-cairo-mono",
-  subsets: ["arabic"],
-});
-
 function layout({ children }: { children: React.ReactNode }) {
   const [hideAppName, setHideAppName] = useState<boolean>(false);
   const toggleShowingAppName = () => {
     setHideAppName(!hideAppName);
   };
 
-  const { auth } = useAuthStore();
-  if (!auth?.isLoggedIn) {
-    redirect(AppRoutes.Auth);
-  }
+  // const { auth } = useAuthStore();
+  // if (!auth?.isLoggedIn) {
+  //   redirect(AppRoutes.Auth);
+  // }
 
   const { t } = useTranslation("sidebar");
 

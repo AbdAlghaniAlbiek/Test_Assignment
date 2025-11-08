@@ -3,5 +3,8 @@
   "NAME": "الاسم: ",
   "EMAIL": "الايميل: ",
   "THEME": "النمط",
-  "LANGUAGE": "اللغة"
+  "LANGUAGE": "اللغة",
+  "SUBMIT": "تأكيد",
+  "USER_INFO": "مغلومات المستخدم",
+  "CHANGE_PROFILE": "تعديل الملف"
 }

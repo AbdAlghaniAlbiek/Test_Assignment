@@ -10,6 +10,10 @@ import profileImage from "@/assets/profile-image.png";
 import { useTheme } from "next-themes";
 import i18n from "@/helpers/i18n/i18n";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
+import { ButtonDialog } from "@/components/buttons-popups/buttons-popups";
+import { Pencil } from "lucide-react";
+import UpdateUserForm from "./forms/update-user-profile";
 
 function SettingsPage() {
   const { auth } = useAuthStore();
@@ -39,13 +43,26 @@ function SettingsPage() {
             height={200}
             alt="profile_image"
           />
-          <p>
-            <b>{t("NAME")}</b>
-            {auth?.name}
-          </p>
-          <p>
-            <b>{t("EMAIL")}</b> {auth?.email}
-          </p>
+          <div className="flex flex-col gap-3">
+            <p>
+              <b>{t("NAME")}</b>
+              {auth?.name}
+            </p>
+            <p>
+              <b>{t("EMAIL")}</b> {auth?.email}
+            </p>
+          </div>
+
+          <div className="mt-5">
+            <ButtonDialog
+              actionStatus={{ status: "Other", otherIcon: <Pencil /> }}
+              dialogProps={{
+                title: t("USER_INFO"),
+                content: <UpdateUserForm />,
+              }}
+              buttonProps={{ content: t("CHANGE_PROFILE") }}
+            />
+          </div>
         </div>
 
         <div>

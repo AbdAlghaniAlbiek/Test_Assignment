@@ -3,7 +3,7 @@
 import { Article, useArticlesStore } from "@/helpers/stores/articles.store";
 import React, { useState } from "react";
 import dayjs from "dayjs";
-import { Download, Eye, Trash } from "lucide-react";
+import { Download, Eye, Share, SquaresExcludeIcon, Trash } from "lucide-react";
 import ReactPDF from "@react-pdf/renderer";
 const ArticlePDF = dynamic(() => import("./article-pdf.component"), {
   ssr: false,
@@ -28,6 +28,14 @@ import {
 import dynamic from "next/dynamic";
 import { tagsItems } from "./tag";
 import { withAuth } from "@/helpers/security/auth.security";
+import { saveAs } from "file-saver";
+import ExcelJS from "exceljs";
+// import ToolTip from "@/components/tooltip/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface IArticle {
   article: Article;
@@ -70,6 +78,79 @@ function ArticleComponent({ article }: IArticle) {
     }
   };
 
+  const exportToExcel = async (
+    data: any,
+    fileName = "excel-file.xlsx",
+    sheetName = "Sheet1"
+  ) => {
+    // Create a new workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet(sheetName);
+
+    // Extract columns from the first row of data
+    if (data) {
+      // Dynamically define columns based on the keys in the first data object
+      const columns = Object.keys(data).map((key) => ({
+        header: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize header
+        key: key,
+        width: 20, // Adjust width as needed
+      }));
+      worksheet.columns = columns;
+
+      // Add data rows
+      worksheet.addRow(data);
+      // data.forEach((row) => worksheet.addRow(row));
+    }
+
+    // Generate Excel file as a buffer
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    // Create a Blob from the buffer and save the file
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    saveAs(blob, fileName);
+  };
+
+  const onDownloadExcelFile = () => {
+    const { coverImage, id, viewedAt, ...restData } = article;
+    const toExportFile = {
+      categoryName: restData.category.name,
+      content: restData.content,
+      publishStatus: JSON.stringify(restData.publishStatus),
+      publishedAt: restData.publishedAt
+        ? restData.publishedAt?.toLocaleDateString()
+        : "---",
+      schedulePublishDate: restData.schedulePublishDate
+        ? restData.schedulePublishDate.toLocaleDateString()
+        : "---",
+      title: restData.title,
+      tags: restData.tags.map((tag) => tag.label).join(", "),
+    };
+
+    // exportToExcel(new Array(1).map((_, i) => ({ ...toExportFile })));
+    exportToExcel(toExportFile);
+  };
+
+  const handleShare = async (link: string) => {
+    const shareData = {
+      title: "Check this out!",
+      text: "Here's something interesting:",
+      url: `http://localhost:3000/sharing/${link}`, // current page URL
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        console.log("Shared successfully!");
+      } else {
+        alert("Sharing not supported on this browser.");
+      }
+    } catch (err) {
+      console.error("Error sharing:", err);
+    }
+  };
+
   return (
     <div
       key={article.id}
@@ -92,7 +173,7 @@ function ArticleComponent({ article }: IArticle) {
         )}
       </p>
 
-      <div className="flex flex-row gap-1 mt-3">
+      <div className="flex flex-row gap-1 mt-3 flex-wrap">
         <ButtonDialog
           actionStatus={{ status: "Read" }}
           buttonProps={{ rounded: "rounded-full", width: 30 }}
@@ -101,8 +182,10 @@ function ArticleComponent({ article }: IArticle) {
             content: <ArticleDetails article={article} />,
             width: 600,
           }}
+          tooltip={{ content: "Show Info" }}
         />
         <ButtonSheet
+          tooltip={{ content: "Modify Data" }}
           actionStatus={{ status: "Update" }}
           buttonProps={{ rounded: "rounded-full", width: 30 }}
           sheetProps={{
@@ -127,6 +210,7 @@ function ArticleComponent({ article }: IArticle) {
           }}
         />
         <DeleteButtonAlertDialog
+          tooltip={{ content: "Delete Article" }}
           buttonProps={{ rounded: "rounded-full", width: 30 }}
           dialogProps={{
             title: t("DELETE_REQUEST"),
@@ -137,18 +221,22 @@ function ArticleComponent({ article }: IArticle) {
           }}
         />
 
-        {/* <ShredButton
+        <ShredButton
+          tooltipProps={{ content: "Download Excel" }}
           actionStatus={{ status: "Other", otherIcon: <Download /> }}
           props={{ rounded: "rounded-full", width: 30, size: "sm" }}
-          onClick={() =>
-            ReactPDF.renderToFile(
-              <ArticlePDF article={article} />,
-              `article.pdf`
-            )
-          }
-        /> */}
+          onClick={() => onDownloadExcelFile()}
+        />
+
+        <ShredButton
+          tooltipProps={{ content: "Share Article" }}
+          actionStatus={{ status: "Other", otherIcon: <Share /> }}
+          props={{ rounded: "rounded-full", width: 30, size: "sm" }}
+          onClick={() => handleShare(article.id.toString())}
+        />
 
         <ButtonDialog
+          tooltip={{ content: "Share Article" }}
           actionStatus={{ status: "Read" }}
           buttonProps={{ rounded: "rounded-full", width: 30 }}
           dialogProps={{

@@ -95,6 +95,14 @@ function CreateDayRangeDialog() {
     //   return;
     // }
 
+    if (
+      Number.parseInt(data.from.split(":")[0]) >
+      Number.parseInt(data.to.split(":")[0])
+    ) {
+      toast.error(`From should be greater than To`);
+      return;
+    }
+
     dateRanges.forEach((dateRang) => {
       if (dateRang.day == JSON.parse(data.day)) {
         addDateRange(dateRang.id!, {
