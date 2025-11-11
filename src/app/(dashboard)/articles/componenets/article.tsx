@@ -3,9 +3,20 @@
 import { Article, useArticlesStore } from "@/helpers/stores/articles.store";
 import React, { useState } from "react";
 import dayjs from "dayjs";
-import { Download, Eye, Share, SquaresExcludeIcon, Trash } from "lucide-react";
+import {
+  Book,
+  Download,
+  Eye,
+  Share,
+  SquaresExcludeIcon,
+  Trash,
+} from "lucide-react";
 import ReactPDF from "@react-pdf/renderer";
 const ArticlePDF = dynamic(() => import("./article-pdf.component"), {
+  ssr: false,
+  loading: () => <p>Loading ...</p>,
+});
+const ArticlePDF2 = dynamic(() => import("./article-pdf2.component"), {
   ssr: false,
   loading: () => <p>Loading ...</p>,
 });
@@ -13,6 +24,7 @@ import generatePDF, { usePDF } from "react-to-pdf";
 import { useTranslation } from "react-i18next";
 import {
   ButtonDialog,
+  ButtonPopover,
   ButtonSheet,
   DeleteButtonAlertDialog,
   ShredButton,
@@ -27,7 +39,6 @@ import {
 } from "../forms/article.schema";
 import dynamic from "next/dynamic";
 import { tagsItems } from "./tag";
-import { withAuth } from "@/helpers/security/auth.security";
 import { saveAs } from "file-saver";
 import ExcelJS from "exceljs";
 // import ToolTip from "@/components/tooltip/tooltip";
@@ -36,6 +47,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ArticlePDFDownload from "../../pdf/article.pdf";
 
 interface IArticle {
   article: Article;
@@ -173,17 +185,18 @@ function ArticleComponent({ article }: IArticle) {
         )}
       </p>
 
-      <div className="flex flex-row gap-1 mt-3 flex-wrap">
+      <div className="flex flex-row gap-1.5 mt-3 flex-wrap">
         <ButtonDialog
           actionStatus={{ status: "Read" }}
           buttonProps={{ rounded: "rounded-full", width: 30 }}
           dialogProps={{
             title: t("ARTICLE_INFO"),
             content: <ArticleDetails article={article} />,
-            width: 600,
+            width: 900,
           }}
           tooltip={{ content: "Show Info" }}
         />
+
         <ButtonSheet
           tooltip={{ content: "Modify Data" }}
           actionStatus={{ status: "Update" }}
@@ -209,6 +222,7 @@ function ArticleComponent({ article }: IArticle) {
             ),
           }}
         />
+
         <DeleteButtonAlertDialog
           tooltip={{ content: "Delete Article" }}
           buttonProps={{ rounded: "rounded-full", width: 30 }}
@@ -234,7 +248,7 @@ function ArticleComponent({ article }: IArticle) {
           props={{ rounded: "rounded-full", width: 30, size: "sm" }}
           onClick={() => handleShare(article.id.toString())}
         />
-
+        {/* 
         <ButtonDialog
           tooltip={{ content: "Share Article" }}
           actionStatus={{ status: "Read" }}
@@ -244,7 +258,26 @@ function ArticleComponent({ article }: IArticle) {
             width: 1000,
             content: <ArticlePDF article={article} />,
           }}
-        />
+        /> */}
+
+        <ArticlePDFDownload article={article} />
+
+        {/* <ButtonDialog
+          actionStatus={{ status: "Other", otherIcon: <Book /> }}
+          buttonProps={{ rounded: "rounded-full", width: 30 }}
+          dialogProps={{
+            width: 1000,
+            title: "Test UI",
+            content: <ArticlePDF2 article={article} />,
+          }}
+        /> */}
+
+        {/* <ButtonPopover
+          actionStatus={{ status: "Create" }}
+          buttonProps={{ rounded: "rounded-full", width: 32, size: "sm" }}
+          popoverProps={{ content: <p>How are you</p> }}
+          tooltip={{ content: "som content" }}
+        /> */}
       </div>
     </div>
   );

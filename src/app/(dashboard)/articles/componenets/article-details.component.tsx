@@ -1,5 +1,5 @@
 import { Article } from "@/helpers/stores/articles.store";
-import React, { useTransition } from "react";
+import React, { useState, useTransition } from "react";
 import Tag from "./tag";
 import { Label } from "@/components/ui/label";
 import dayjs from "dayjs";
@@ -8,6 +8,7 @@ import generatePDF, { usePDF } from "react-to-pdf";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
+import ArticlePDF2 from "./article-pdf2.component";
 
 interface IArticlePDF {
   article: Article;
@@ -15,10 +16,20 @@ interface IArticlePDF {
 
 function ArticleDetails({ article }: IArticlePDF) {
   const { toPDF, targetRef } = usePDF({ filename: "article-details.pdf" });
+  const [show, setShow] = useState(false);
+
+  const handleDownload = async () => {
+    setShow(true);
+    await new Promise((r) => setTimeout(r, 100)); // wait for render
+    await toPDF();
+    setShow(false);
+  };
+
   const { t } = useTranslation("article");
+
   return (
     <ScrollArea>
-      <div className="flex flex-col gap-5" ref={targetRef}>
+      <div className="flex flex-col gap-5">
         {article.coverImage && (
           <Image
             src={article?.coverImage?.url ?? ""}
@@ -67,12 +78,7 @@ function ArticleDetails({ article }: IArticlePDF) {
           </div>
         </div>
 
-        <div>
-          <b>{t("CONTENT")}: </b>
-          <div dangerouslySetInnerHTML={{ __html: article.content }}></div>
-        </div>
-
-        {/* <div className="flex flex-row gap-3">
+        <div className="flex flex-row gap-3">
           <b>Download: </b>
           <Download
             width={20}
@@ -83,10 +89,22 @@ function ArticleDetails({ article }: IArticlePDF) {
               //     <ArticlePDF article={article} />,
               //     `${__dirname}/article.pdf`
               //   )
-              generatePDF(targetRef, { filename: "article.pdf" })
+              // generatePDF(targetRef, { filename: "article.pdf" })
+              handleDownload()
             }
           />
-        </div> */}
+        </div>
+
+        <div>
+          <b>{t("CONTENT")}: </b>
+          <div dangerouslySetInnerHTML={{ __html: article.content }}></div>
+        </div>
+
+        {show && (
+          <div className="mt-10">
+            <ArticlePDF2 article={article} targetRef={targetRef} />
+          </div>
+        )}
       </div>
     </ScrollArea>
   );

@@ -1,6 +1,9 @@
 "use client";
 
-import AppSidebar, { IAppSidebarItemProps } from "@/components/sidebar/sidebar";
+import AppSidebar, {
+  IAppSidebarCollapsedGroupItemsProps,
+  IAppSidebarItemProps,
+} from "@/components/sidebar/sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import Image from "next/image";
 import React, { useState, useTransition } from "react";

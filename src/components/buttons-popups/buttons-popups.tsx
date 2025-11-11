@@ -132,12 +132,14 @@ interface ISharedButtonProps {
   actionStatus: ActionStatus;
   onClick?: () => void;
   tooltipProps?: ITooltipProps;
+  withToolTip?: boolean;
 }
 export function ShredButton({
   actionStatus,
   props,
   onClick,
   tooltipProps,
+  withToolTip = true,
 }: ISharedButtonProps) {
   const { actualWidth: actualButtonWidth } = useActualWidth({
     width: props?.width ?? 0,
@@ -162,7 +164,7 @@ export function ShredButton({
       : {};
   const buttonClickEvent = onClick ? { onClick } : {};
 
-  return (
+  return withToolTip ? (
     <Tooltip>
       <TooltipTrigger asChild>
         <Button
@@ -185,6 +187,22 @@ export function ShredButton({
         <TooltipContent>{tooltipProps.content}</TooltipContent>
       )}
     </Tooltip>
+  ) : (
+    <Button
+      size={props?.size ?? "default"}
+      className={cn(
+        chooseColor(actionStatus),
+        chooseHoverColor(actionStatus),
+        props?.rounded ?? "rounded-md",
+        props?.contentDirection === "vertical" ? "flex-col" : "flex row",
+        "gap-2"
+      )}
+      {...buttonProps}
+      {...buttonClickEvent}
+    >
+      {showIcon(actionStatus, props?.iconWidth)}
+      {props?.content ? <p>{props?.content}</p> : null}
+    </Button>
   );
 }
 
@@ -317,7 +335,7 @@ export interface IButtonPopoverProps {
   };
   tooltip?: ITooltipProps;
 }
-export function ButtonPopoverProps({
+export function ButtonPopover({
   actionStatus,
   buttonProps,
   popoverProps: { content },
@@ -326,7 +344,19 @@ export function ButtonPopoverProps({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Tooltip>
+        {/* <ShredButton
+          props={buttonProps}
+          actionStatus={actionStatus}
+          tooltipProps={tooltip}
+          withToolTip={false}
+        /> */}
+        {ShredButton({
+          actionStatus: actionStatus,
+          props: buttonProps,
+          tooltipProps: tooltip,
+          withToolTip: false,
+        })}
+        {/* <Tooltip>
           <TooltipTrigger>
             <ShredButton
               props={buttonProps}
@@ -334,7 +364,7 @@ export function ButtonPopoverProps({
               tooltipProps={tooltip}
             />
           </TooltipTrigger>
-        </Tooltip>
+        </Tooltip> */}
       </PopoverTrigger>
       <PopoverContent>{content}</PopoverContent>
     </Popover>
@@ -345,7 +375,7 @@ export interface IButtonGoToPageProps {
   actionStatus: ActionStatus;
   buttonProps?: IButtonProps & IActualWidthScreenSizes;
   goToPageFunction: () => void;
-  tooltip: ITooltipProps;
+  tooltip?: ITooltipProps;
 }
 export function ButtonGoToPage({
   actionStatus,

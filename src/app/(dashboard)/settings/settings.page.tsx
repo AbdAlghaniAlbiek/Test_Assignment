@@ -5,15 +5,21 @@ import Switch, { SwitchLang } from "@/components/switch/switch";
 import { useAuthStore } from "@/helpers/stores/auth.store";
 import { useAppSettingsStore } from "@/helpers/stores/settings.store";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import profileImage from "@/assets/profile-image.png";
 import { useTheme } from "next-themes";
 import i18n from "@/helpers/i18n/i18n";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { ButtonDialog } from "@/components/buttons-popups/buttons-popups";
+import {
+  ButtonDialog,
+  ButtonGoToPage,
+} from "@/components/buttons-popups/buttons-popups";
 import { Pencil } from "lucide-react";
 import UpdateUserForm from "./forms/update-user-profile";
+import FileUploader, { IFileUploaderFile } from "@craft-code/file-uploader";
+import { useRouter } from "next/navigation";
+import { AppRoutes } from "@/helpers/routes/routes";
 
 function SettingsPage() {
   const { auth } = useAuthStore();
@@ -32,6 +38,8 @@ function SettingsPage() {
 
   const { t } = useTranslation("settings");
 
+  const router = useRouter();
+
   return (
     <PageContent>
       <div className="flex flex-col gap-10 items-center justify-center">
@@ -43,6 +51,7 @@ function SettingsPage() {
             height={200}
             alt="profile_image"
           />
+
           <div className="flex flex-col gap-3">
             <p>
               <b>{t("NAME")}</b>
@@ -54,12 +63,18 @@ function SettingsPage() {
           </div>
 
           <div className="mt-5">
-            <ButtonDialog
+            {/* <ButtonDialog
               actionStatus={{ status: "Other", otherIcon: <Pencil /> }}
               dialogProps={{
                 title: t("USER_INFO"),
                 content: <UpdateUserForm />,
               }}
+              buttonProps={{ content: t("CHANGE_PROFILE") }}
+            /> */}
+
+            <ButtonGoToPage
+              actionStatus={{ status: "Other", otherIcon: <Pencil /> }}
+              goToPageFunction={() => router.push(AppRoutes.UpdateProfile)}
               buttonProps={{ content: t("CHANGE_PROFILE") }}
             />
           </div>

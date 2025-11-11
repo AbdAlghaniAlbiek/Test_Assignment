@@ -5,4 +5,5 @@ export enum AppRoutes {
   Stats = "/stats",
   Settings = "/settings",
   WorkingHours = "/working-hours",
+  UpdateProfile = "/settings/update-profile",
 }
